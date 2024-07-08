@@ -1,5 +1,13 @@
 {
     "company_name": "My Company",
-    "company_address": "My Company Address",
-    "bank_details": "Bank Details"
+    "company_address": [
+        "Line 1 of Address",
+        "Line 2 of Address",
+        "Line 3 of Address"
+    ],
+    "bank_details": [
+        "Bank Name: XYZ Bank",
+        "Account Number: 123456789",
+        "SWIFT Code: XYZ123"
+    ]
 }

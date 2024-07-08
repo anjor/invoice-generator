@@ -26,7 +26,7 @@ def generate_invoice(client_name, client_address, invoice_number, date, hours, r
     elements.append(Spacer(1, 12))
     
     # Add company address and invoice details
-    company_info = f"{company_address}<br/><br/>Invoice Number: {invoice_number}<br/>Date: {date}"
+    company_info = f"{'<br/>'.join(company_address)}<br/><br/>Invoice Number: {invoice_number}<br/>Date: {date}"
     elements.append(Paragraph(company_info, styles['Normal']))
     elements.append(Spacer(1, 12))
     
@@ -54,7 +54,7 @@ def generate_invoice(client_name, client_address, invoice_number, date, hours, r
     elements.append(Spacer(1, 12))
     
     # Add bank details
-    elements.append(Paragraph(bank_details, styles['Normal']))
+    elements.append(Paragraph('<br/>'.join(bank_details), styles['Normal']))
     
     doc.build(elements)
     print(f"Invoice {file_name} generated successfully.")
