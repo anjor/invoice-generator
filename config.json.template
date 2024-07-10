@@ -15,5 +15,7 @@
         "Line 1 of Client Address",
         "Line 2 of Client Address",
         "Line 3 of Client Address"
-    ]
+    ],
+    "currency": "USD",
+    "unit_of_work": "HOURLY"  # Options: HOURLY, DAILY, WEEKLY
 }

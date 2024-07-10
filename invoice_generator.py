@@ -16,6 +16,20 @@ def generate_invoice(invoice_number, date, hours, rate):
     client_name = config['client_name']
     client_address = config['client_address']
     
+    currency = config.get('currency', 'USD')
+    currency_symbol = '$' if currency == 'USD' else '£'
+    
+    unit_of_work = config.get('unit_of_work', 'HOURLY')
+    if unit_of_work == 'DAILY':
+        unit_header = "Number of Days"
+        rate_header = "Daily Rate"
+    elif unit_of_work == 'WEEKLY':
+        unit_header = "Number of Weeks"
+        rate_header = "Weekly Rate"
+    else:
+        unit_header = "Number of Hours"
+        rate_header = "Hourly Rate"
+    
     total_amount = hours * rate
     file_name = f"invoice_{invoice_number}.pdf"
     
@@ -39,8 +53,8 @@ def generate_invoice(invoice_number, date, hours, rate):
     
     # Add table with invoice details
     data = [
-        ["Description", "Number of Hours", "Hourly Rate", "Total Amount"],
-        ["Consulting Services", hours, f"${rate:.2f}", f"${total_amount:.2f}"]
+        ["Description", unit_header, rate_header, "Total Amount"],
+        ["Consulting Services", hours, f"{currency_symbol}{rate:.2f}", f"{currency_symbol}{total_amount:.2f}"]
     ]
     table = Table(data)
     table.setStyle(TableStyle([
