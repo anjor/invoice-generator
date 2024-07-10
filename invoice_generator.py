@@ -5,9 +5,9 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 
-def generate_invoice(invoice_number, date, hours, rate):
-    # Load company and client details from config.json
-    with open('config.json', 'r') as f:
+def generate_invoice(config_file, invoice_number, date, hours, rate):
+    # Load company and client details from the specified config file
+    with open(config_file, 'r') as f:
         config = json.load(f)
     
     company_name = config['company_name']
@@ -78,6 +78,7 @@ def generate_invoice(invoice_number, date, hours, rate):
 def main():
     parser = argparse.ArgumentParser(description="Generate an invoice.")
 
+    parser.add_argument("config_file", help="Path to the configuration file")
     parser.add_argument("invoice_number", help="Invoice number")
     parser.add_argument("date", help="Date of the invoice")
     parser.add_argument("hours", type=float, help="Number of hours worked")
@@ -87,6 +88,7 @@ def main():
     
     generate_invoice(
 
+        args.config_file,
         args.invoice_number,
         args.date,
         args.hours,
