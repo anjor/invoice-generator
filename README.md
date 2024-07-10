@@ -17,6 +17,22 @@ This is a simple command-line invoice generator that creates PDF invoices. The i
 
 ## Configuration
 
+## Configuration
+
+1. Copy the `config.json.template` file to `config.json`:
+   ```bash
+   cp config.json.template config.json
+   ```
+
+2. Update the `config.json` file with your company details:
+   ```json
+   {
+       "company_name": "My Company",
+       "company_address": "My Company Address",
+       "bank_details": "Bank Details"
+   }
+   ```
+
 Update the `config.json` file with your company details:
 ```json
 {
