@@ -5,14 +5,16 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 
-def generate_invoice(client_name, client_address, invoice_number, date, hours, rate):
-    # Load company details from config.json
+def generate_invoice(invoice_number, date, hours, rate):
+    # Load company and client details from config.json
     with open('config.json', 'r') as f:
         config = json.load(f)
     
     company_name = config['company_name']
     company_address = config['company_address']
     bank_details = config['bank_details']
+    client_name = config['client_name']
+    client_address = config['client_address']
     
     total_amount = hours * rate
     file_name = f"invoice_{invoice_number}.pdf"
@@ -31,7 +33,7 @@ def generate_invoice(client_name, client_address, invoice_number, date, hours, r
     elements.append(Spacer(1, 12))
     
     # Add client information
-    client_info = f"<b>Billed to:</b><br/>{client_name}<br/>{client_address}"
+    client_info = f"<b>Billed to:</b><br/>{client_name}<br/>{'<br/>'.join(client_address)}"
     elements.append(Paragraph(client_info, styles['Normal']))
     elements.append(Spacer(1, 12))
     
@@ -61,8 +63,7 @@ def generate_invoice(client_name, client_address, invoice_number, date, hours, r
 
 def main():
     parser = argparse.ArgumentParser(description="Generate an invoice.")
-    parser.add_argument("client_name", help="Client's name")
-    parser.add_argument("client_address", help="Client's address")
+
     parser.add_argument("invoice_number", help="Invoice number")
     parser.add_argument("date", help="Date of the invoice")
     parser.add_argument("hours", type=float, help="Number of hours worked")
@@ -71,8 +72,7 @@ def main():
     args = parser.parse_args()
     
     generate_invoice(
-        args.client_name,
-        args.client_address,
+
         args.invoice_number,
         args.date,
         args.hours,

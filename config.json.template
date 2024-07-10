@@ -9,5 +9,11 @@
         "Bank Name: XYZ Bank",
         "Account Number: 123456789",
         "SWIFT Code: XYZ123"
+    ],
+    "client_name": "Client Name",
+    "client_address": [
+        "Line 1 of Client Address",
+        "Line 2 of Client Address",
+        "Line 3 of Client Address"
     ]
 }
