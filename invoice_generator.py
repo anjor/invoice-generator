@@ -178,7 +178,7 @@ def main():
 
     args = parser.parse_args()
 
-    generate_invoice(args.config, args.number, args.date, args.hours, args.rate)
+    generate_invoice(args.config, args.number, args.date, args.units, args.rate)
 
 
 if __name__ == "__main__":
