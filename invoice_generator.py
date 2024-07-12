@@ -162,17 +162,23 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
 def main():
     parser = argparse.ArgumentParser(description="Generate an invoice.")
 
-    parser.add_argument("config_file", help="Path to the configuration file")
-    parser.add_argument("invoice_number", help="Invoice number")
-    parser.add_argument("date", help="Date of the invoice")
-    parser.add_argument("hours", type=float, help="Number of hours worked")
-    parser.add_argument("rate", type=float, help="Hourly rate")
+    parser.add_argument(
+        "-c", "--config", required=True, help="Path to the configuration file"
+    )
+    parser.add_argument("-n", "--number", required=True, help="Invoice number")
+    parser.add_argument("-d", "--date", required=True, help="Date of the invoice")
+    parser.add_argument(
+        "-u",
+        "--units",
+        type=float,
+        required=True,
+        help="Number of units (hours/days/weeks) worked",
+    )
+    parser.add_argument("-r", "--rate", type=float, required=True, help="Rate per unit")
 
     args = parser.parse_args()
 
-    generate_invoice(
-        args.config_file, args.invoice_number, args.date, args.hours, args.rate
-    )
+    generate_invoice(args.config, args.number, args.date, args.hours, args.rate)
 
 
 if __name__ == "__main__":

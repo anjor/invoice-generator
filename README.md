@@ -40,14 +40,19 @@ This is a simple command-line invoice generator that creates PDF invoices. The i
 ## Usage
 
 Run the script with the following command:
+
 ```bash
-python3 invoice_generator.py <client_name> <client_address> <invoice_number> <date> <hours> <rate>
+python3 invoice_generator.py -c <config_file> -n <invoice_number> -d <date> -hr <hours> -r <rate>
 ```
 
-### Example
-```bash
-python3 invoice_generator.py "Client Name" "Client Address" "001" "2023-10-01" 10 50
-```
+### Arguments
+
+- `-c` or `--config`: The configuration file to use. (JSON)
+- `-n` or `--number`: The invoice number. 
+- `-d` or `--date`: The invoice date.
+- `-u` or `--units`: The number of units (hours/days/weeks) worked. 
+- `-r` or `--rate` : The rate per unit.
+
 
 This will generate a PDF invoice with the specified details.
 
