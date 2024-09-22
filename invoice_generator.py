@@ -33,6 +33,8 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
         unit_header = "Number of Hours"
         rate_header = "Hourly Rate"
 
+    include_vat = config.get("include_vat", False)
+
     total_amount = hours * rate
     file_name = f"invoice_{invoice_number}.pdf"
 
@@ -101,15 +103,26 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
     elements.append(Spacer(1, 12))
 
     # Add table with invoice details
-    data = [
-        ["Description", unit_header, rate_header, "Total Amount"],
-        [
-            "Consulting Services",
-            hours,
-            f"{currency_symbol}{rate:.2f}",
-            f"{currency_symbol}{total_amount:.2f}",
-        ],
+    headers = ["Description", unit_header, rate_header]
+    if include_vat:
+        headers.append("VAT")
+    headers.append("Total Amount")
+
+    row = [
+        "Consulting Services",
+        hours,
+        f"{currency_symbol}{rate:.2f}",
     ]
+    if include_vat:
+        row.append("20%")
+    row.append(f"{currency_symbol}{total_amount:.2f}")
+
+    data = [headers, row]
+
+    if include_vat:
+        # Add a row for the total including VAT
+        vat_total_row = ["", "", "", "Total (inc. VAT)", f"{currency_symbol}{total_amount * 1.2:.2f}"]
+        data.append(vat_total_row)
     table = Table(data)
     table.setStyle(
         TableStyle(
