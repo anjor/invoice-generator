@@ -121,7 +121,8 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
 
     if include_vat:
         # Add a row for the total including VAT
-        vat_total_row = ["", "", "", "Total (inc. VAT)", f"{currency_symbol}{total_amount * 1.2:.2f}"]
+        total_amount = total_amount * 1.2
+        vat_total_row = ["", "", "", "Total (inc. VAT)", f"{currency_symbol}{total_amount:.2f}"]
         data.append(vat_total_row)
     table = Table(data)
     table.setStyle(
