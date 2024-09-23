@@ -8,6 +8,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.platypus.flowables import HRFlowable
 
 
+def get_currency_symbol(currency):
+    currency_symbols = {
+        'USD': '$',
+        'GBP': '£',
+        'EUR': '€'
+    }
+    return currency_symbols.get(currency, '$')  # Default to $ if currency not found
+
 def generate_invoice(config_file, invoice_number, date, hours, rate):
     # Load company and client details from the specified config file
     with open(config_file, "r") as f:
@@ -20,7 +28,7 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
     client_address = config["client_address"]
 
     currency = config.get("currency", "USD")
-    currency_symbol = "$" if currency == "USD" else "£"
+    currency_symbol = get_currency_symbol(currency)
 
     unit_of_work = config.get("unit_of_work", "HOURLY")
     if unit_of_work == "DAILY":
