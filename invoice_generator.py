@@ -16,7 +16,7 @@ def get_currency_symbol(currency):
     }
     return currency_symbols.get(currency, '$')  # Default to $ if currency not found
 
-def generate_invoice(config_file, invoice_number, date, hours, rate):
+def generate_invoice(config_file, invoice_number, date, hours):
     # Load company and client details from the specified config file
     with open(config_file, "r") as f:
         config = json.load(f)
@@ -26,6 +26,7 @@ def generate_invoice(config_file, invoice_number, date, hours, rate):
     bank_details = config["bank_details"]
     client_name = config["client_name"]
     client_address = config["client_address"]
+    rate = float(config["rate"])
 
     currency = config.get("currency", "USD")
     currency_symbol = get_currency_symbol(currency)
@@ -194,11 +195,10 @@ def main():
         required=True,
         help="Number of units (hours/days/weeks) worked",
     )
-    parser.add_argument("-r", "--rate", type=float, required=True, help="Rate per unit")
 
     args = parser.parse_args()
 
-    generate_invoice(args.config, args.number, args.date, args.units, args.rate)
+    generate_invoice(args.config, args.number, args.date, args.units)
 
 
 if __name__ == "__main__":
