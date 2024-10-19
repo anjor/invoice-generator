@@ -114,20 +114,24 @@ def generate_invoice(config_file, invoice_number, date, hours):
     # Add table with invoice details
     headers = ["Description", unit_header, rate_header]
     if include_vat:
-        headers.append("VAT")
-    headers.append("Total Amount")
+        headers.extend(["Amount", "VAT (20%)", "Total Amount"])
+    else:
+        headers.append("Total Amount")
 
+    amount_excl_vat = hours * rate
     row = [
         "Consulting Services",
         hours,
         f"{currency_symbol}{rate:.2f}",
+        f"{currency_symbol}{amount_excl_vat:.2f}",
     ]
     if include_vat:
-        row.append("20%")
-        total_amount = total_amount * 1.2
-        row.append(f"{currency_symbol}{total_amount:.2f}")
-    else:
-        row.append(f"{currency_symbol}{total_amount:.2f}")
+        vat_amount = amount_excl_vat * 0.2
+        total_amount = amount_excl_vat + vat_amount
+        row.extend([
+            f"{currency_symbol}{vat_amount:.2f}",
+            f"{currency_symbol}{total_amount:.2f}"
+        ])
 
     data = [headers, row]
 
