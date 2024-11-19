@@ -38,6 +38,9 @@ def generate_invoice(config_file, invoice_number, date, hours):
     elif unit_of_work == "WEEKLY":
         unit_header = "Number of Weeks"
         rate_header = "Weekly Rate"
+    elif unit_of_work == "MONTHLY":
+        unit_header = "Number of Months"
+        rate_header = "Monthly Rate"
     else:
         unit_header = "Number of Hours"
         rate_header = "Hourly Rate"
