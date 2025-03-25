@@ -51,7 +51,6 @@ python3 invoice_generator.py -c <config_file> -n <invoice_number> -d <date> -hr 
 - `-n` or `--number`: The invoice number. 
 - `-d` or `--date`: The invoice date.
 - `-u` or `--units`: The number of units (hours/days/weeks) worked. 
-- `-r` or `--rate` : The rate per unit.
 
 
 This will generate a PDF invoice with the specified details.
