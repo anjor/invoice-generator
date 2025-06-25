@@ -19,5 +19,6 @@
     "currency": "USD",
     "unit_of_work": "HOURLY",
     "rate": 200, 
-    "include_vat": true
+    "include_vat": true,
+    "filename_template": "{client_name}_{company_name}_invoice_{invoice_number}.pdf"
 }

@@ -65,6 +65,17 @@ def validate_config(config: Dict[str, Any]) -> None:
     
     if not isinstance(config["bank_details"], list) or len(config["bank_details"]) < 1:
         raise ValueError("Bank details must be a list with at least 1 line")
+    
+    # Validate filename template if provided
+    if "filename_template" in config:
+        template = config["filename_template"]
+        if not isinstance(template, str) or not template.strip():
+            raise ValueError("Filename template must be a non-empty string")
+        # Check if template contains valid placeholders
+        try:
+            template.format(client_name="test", company_name="test", invoice_number="001")
+        except KeyError as e:
+            raise ValueError(f"Invalid placeholder in filename template: {e}")
 
 
 def generate_invoice(config_file: str, invoice_number: str, date: str, hours: float) -> None:
@@ -98,7 +109,14 @@ def generate_invoice(config_file: str, invoice_number: str, date: str, hours: fl
     include_vat = config.get("include_vat", False)
 
     total_amount = hours * rate
-    file_name = f"invoice_{invoice_number}.pdf"
+    
+    # Generate filename using template
+    filename_template = config.get("filename_template", "invoice_{invoice_number}.pdf")
+    file_name = filename_template.format(
+        client_name=client_name.lower().replace(" ", "_"),
+        company_name=company_name.lower().replace(" ", "_"),
+        invoice_number=invoice_number
+    )
 
     doc = SimpleDocTemplate(file_name, pagesize=letter)
     styles = getSampleStyleSheet()
