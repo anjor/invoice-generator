@@ -1,5 +1,9 @@
 import argparse
 import json
+import logging
+import os
+import sys
+from typing import Dict, List, Any
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -8,7 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.platypus.flowables import HRFlowable
 
 
-def get_currency_symbol(currency):
+def get_currency_symbol(currency: str) -> str:
     currency_symbols = {
         'USD': '$',
         'GBP': '£',
@@ -16,10 +20,56 @@ def get_currency_symbol(currency):
     }
     return currency_symbols.get(currency, '$')  # Default to $ if currency not found
 
-def generate_invoice(config_file, invoice_number, date, hours):
-    # Load company and client details from the specified config file
-    with open(config_file, "r") as f:
-        config = json.load(f)
+def load_config(config_file: str) -> Dict[str, Any]:
+    """Load and validate configuration from JSON file."""
+    try:
+        if not os.path.exists(config_file):
+            raise FileNotFoundError(f"Configuration file '{config_file}' not found")
+        
+        with open(config_file, "r") as f:
+            config = json.load(f)
+        
+        validate_config(config)
+        return config
+    
+    except json.JSONDecodeError as e:
+        logging.error(f"Invalid JSON in configuration file: {e}")
+        sys.exit(1)
+    except FileNotFoundError as e:
+        logging.error(str(e))
+        sys.exit(1)
+    except Exception as e:
+        logging.error(f"Error loading configuration: {e}")
+        sys.exit(1)
+
+
+def validate_config(config: Dict[str, Any]) -> None:
+    """Validate required configuration fields."""
+    required_fields = [
+        "company_name", "company_address", "bank_details",
+        "client_name", "client_address", "rate"
+    ]
+    
+    for field in required_fields:
+        if field not in config:
+            raise ValueError(f"Missing required configuration field: '{field}'")
+    
+    if not isinstance(config["rate"], (int, float)) or config["rate"] <= 0:
+        raise ValueError("Rate must be a positive number")
+    
+    if not isinstance(config["company_address"], list) or len(config["company_address"]) < 2:
+        raise ValueError("Company address must be a list with at least 2 lines")
+    
+    if not isinstance(config["client_address"], list) or len(config["client_address"]) < 1:
+        raise ValueError("Client address must be a list with at least 1 line")
+    
+    if not isinstance(config["bank_details"], list) or len(config["bank_details"]) < 1:
+        raise ValueError("Bank details must be a list with at least 1 line")
+
+
+def generate_invoice(config_file: str, invoice_number: str, date: str, hours: float) -> None:
+    """Generate PDF invoice from configuration and parameters."""
+    config = load_config(config_file)
 
     company_name = config["company_name"]
     company_address = config["company_address"]
@@ -183,11 +233,30 @@ def generate_invoice(config_file, invoice_number, date, hours):
 
     elements.append(bottom_table)
 
-    doc.build(elements)
-    print(f"Invoice {file_name} generated successfully.")
+    try:
+        doc.build(elements)
+        logging.info(f"Invoice {file_name} generated successfully.")
+    except Exception as e:
+        logging.error(f"Error generating PDF: {e}")
+        sys.exit(1)
 
 
-def main():
+def validate_arguments(args: argparse.Namespace) -> None:
+    """Validate command-line arguments."""
+    if not args.config:
+        raise ValueError("Configuration file path is required")
+    
+    if not args.number or not args.number.strip():
+        raise ValueError("Invoice number cannot be empty")
+    
+    if not args.date or not args.date.strip():
+        raise ValueError("Invoice date cannot be empty")
+    
+    if args.units <= 0:
+        raise ValueError("Units must be greater than 0")
+
+
+def main() -> None:
     parser = argparse.ArgumentParser(description="Generate an invoice.")
 
     parser.add_argument(
@@ -204,8 +273,22 @@ def main():
     )
 
     args = parser.parse_args()
-
-    generate_invoice(args.config, args.number, args.date, args.units)
+    
+    # Setup logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    
+    try:
+        validate_arguments(args)
+        generate_invoice(args.config, args.number, args.date, args.units)
+    except ValueError as e:
+        logging.error(f"Invalid argument: {e}")
+        sys.exit(1)
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

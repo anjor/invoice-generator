@@ -17,7 +17,7 @@
         "Line 3 of Client Address"
     ],
     "currency": "USD",
-    "unit_of_work": "HOURLY",  # Options: HOURLY, DAILY, WEEKLY
+    "unit_of_work": "HOURLY",
     "rate": 200, 
     "include_vat": true
 }
